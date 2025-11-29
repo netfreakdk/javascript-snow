@@ -1,9 +1,12 @@
 const snowfall = {};
+const urlParams = new URLSearchParams(window.location.search);
+const sizeParam = urlParams.get('size');
+snowfall.sizeMultiplier = sizeParam ? parseFloat(sizeParam) : 1;
 snowfall.canvas = document.getElementById("snowfall-element");
 snowfall.context = snowfall.canvas.getContext("2d");
 // Snowflake constructor
 snowfall.snowflake = function () {
-	this.size = Math.random() * 2 + 2
+	this.size = (Math.random() * 2 + 2) * snowfall.sizeMultiplier;
 	this.x = (Math.random() * snowfall.canvas.width - this.size - 1) + this.size + 1;
 	this.baseX = this.x;
 	this.distance = Math.random() * 50 + 1;
@@ -23,7 +26,9 @@ snowfall.snowflake = function () {
 		this.x = this.baseX + this.distance * Math.sin(this.radians);
 		//Draws on the snowflake
 		snowfall.context.fillStyle = `rgba(255,255,255,${this.opacity})`;
-		snowfall.context.fillRect(this.x, this.y, this.size, this.size);
+		snowfall.context.beginPath();
+		snowfall.context.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+		snowfall.context.fill();
 	}
 }
 // Initial setup function
